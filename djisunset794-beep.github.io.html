@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skyline Spartans Basketball</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #1a6b2f;
+      --green-bright: #22882f;
+      --green-light: #2dab45;
+      --silver: #c8d0d8;
+      --silver-light: #e8edf2;
+      --dark: #0a0f0b;
+      --dark-2: #111710;
+      --dark-3: #1a2018;
+      --white: #f5f7f5;
+      --accent: #f0c530;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 64px;
+      background: rgba(10,15,11,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(34,136,47,0.3);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: .75rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      color: var(--white);
+    }
+    .nav-logo .dot { color: var(--green-light); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--silver);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--green-light); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding-top: 64px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(34,136,47,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 120% 100% at 50% 100%, rgba(10,15,11,1) 40%, transparent 100%),
+        linear-gradient(160deg, #0d1a10 0%, #0a0f0b 60%, #101a12 100%);
+    }
+    /* court lines decoration */
+    .court-lines {
+      position: absolute; inset: 0; opacity: .07;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(34,136,47,.8) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(34,136,47,.8) 60px);
+      background-size: 60px 60px;
+    }
+    .hero-ball {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 2px solid rgba(34,136,47,0.12);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-ring 4s ease-in-out infinite;
+    }
+    .hero-ball::before {
+      content: '';
+      position: absolute; inset: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(34,136,47,0.18);
+    }
+    .hero-ball::after {
+      content: '';
+      position: absolute; inset: 100px;
+      border-radius: 50%;
+      border: 1px solid rgba(34,136,47,0.25);
+    }
+    @keyframes pulse-ring {
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity:.5; }
+      50% { transform: translate(-50%,-50%) scale(1.05); opacity:1; }
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 2rem; }
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp .8s .2s forwards;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 14vw, 10rem);
+      line-height: .9;
+      letter-spacing: 3px;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp .8s .4s forwards;
+    }
+    .hero-title .green { color: var(--green-light); }
+    .hero-subtitle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-top: .5rem;
+      opacity: 0;
+      animation: fadeUp .8s .6s forwards;
+    }
+    .hero-divider {
+      width: 80px; height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--accent));
+      margin: 2rem auto;
+      opacity: 0;
+      animation: fadeUp .8s .8s forwards;
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--silver);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp .8s 1s forwards;
+    }
+    .hero-badges {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .8s 1.2s forwards;
+    }
+    .badge {
+      display: flex; align-items: center; gap: .5rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: .6rem 1.4rem;
+      border: 1px solid rgba(34,136,47,0.4);
+      border-radius: 2px;
+      color: var(--silver-light);
+      background: rgba(34,136,47,0.08);
+    }
+    .badge .icon { font-size: 1rem; }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      animation: bounce 2s infinite;
+      z-index: 2;
+    }
+    .hero-scroll .line { width: 1px; height: 40px; background: rgba(34,136,47,.5); }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 2rem; }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: .75rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      letter-spacing: 2px;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .section-line {
+      width: 50px; height: 3px;
+      background: linear-gradient(90deg, var(--green), transparent);
+      margin-bottom: 2.5rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* ── STATS BAND ── */
+    #stats-band {
+      background: var(--green);
+      padding: 3rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    #stats-band::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        -55deg,
+        rgba(0,0,0,.08) 0px,
+        rgba(0,0,0,.08) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+    }
+    .stats-grid {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+      position: relative;
+    }
+    .stat-item {
+      flex: 1; min-width: 180px;
+      text-align: center;
+      padding: 1rem 2rem;
+      border-right: 1px solid rgba(255,255,255,.2);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--white);
+    }
+    .stat-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.75);
+      margin-top: .25rem;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--dark-2); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--silver);
+      line-height: 1.85;
+      margin-bottom: 1.25rem;
+      font-size: 1.05rem;
+    }
+    .about-visual {
+      position: relative;
+      aspect-ratio: 4/5;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .court-art {
+      width: 100%; height: 100%;
+      position: relative;
+      border: 1px solid rgba(34,136,47,.25);
+      background: var(--dark-3);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .court-art svg { width: 85%; opacity: .6; }
+    .court-art::after {
+      content: 'SPARTANS';
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 4px;
+      color: rgba(34,136,47,.4);
+    }
+    .about-tags { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+    .about-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      background: rgba(34,136,47,.12);
+      border: 1px solid rgba(34,136,47,.3);
+      color: var(--green-light);
+      border-radius: 2px;
+    }
+
+    /* ── ROSTER ── */
+    #roster { background: var(--dark); }
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px;
+      border: 1px solid rgba(34,136,47,.15);
+    }
+    .player-card {
+      background: var(--dark-3);
+      padding: 1.75rem 1.5rem;
+      transition: background .2s, transform .2s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .player-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), transparent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .3s;
+    }
+    .player-card:hover { background: rgba(34,136,47,.08); }
+    .player-card:hover::before { transform: scaleX(1); }
+    .player-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      line-height: 1;
+      color: rgba(34,136,47,.25);
+      position: absolute; top: 1rem; right: 1.25rem;
+    }
+    .player-pos {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: .35rem;
+    }
+    .player-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--white);
+      letter-spacing: .5px;
+    }
+    .player-year {
+      font-size: .82rem;
+      color: var(--silver);
+      margin-top: .25rem;
+    }
+
+    /* ── SCORES ── */
+    #scores { background: var(--dark-2); }
+    .scores-list { display: flex; flex-direction: column; gap: .75rem; }
+    .score-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 1.25rem 1.75rem;
+      background: var(--dark-3);
+      border-left: 3px solid transparent;
+      transition: border-color .2s, background .2s;
+    }
+    .score-row:hover { background: rgba(34,136,47,.07); border-left-color: var(--green); }
+    .score-row.win { border-left-color: var(--green-light); }
+    .score-row.loss { border-left-color: #c0392b; }
+    .score-team {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--white);
+    }
+    .score-team.away { text-align: right; color: var(--silver); }
+    .score-center { text-align: center; }
+    .score-nums {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--white);
+    }
+    .score-date {
+      font-size: .75rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-top: .1rem;
+    }
+    .result-tag {
+      display: inline-block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .7rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: .2rem .5rem;
+      border-radius: 2px;
+    }
+    .result-tag.win { background: rgba(34,136,47,.25); color: var(--green-light); }
+    .result-tag.loss { background: rgba(192,57,43,.2); color: #e74c3c; }
+
+    /* ── SCHEDULE ── */
+    #schedule { background: var(--dark); }
+    .schedule-table { width: 100%; border-collapse: collapse; }
+    .schedule-table th {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--silver);
+      padding: .75rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(34,136,47,.2);
+    }
+    .schedule-table td {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .95rem;
+    }
+    .schedule-table tr:hover td { background: rgba(34,136,47,.05); }
+    .opp-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem; }
+    .home-away {
+      font-size: .75rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: .15rem .4rem;
+      border: 1px solid rgba(255,255,255,.15);
+      color: var(--silver);
+    }
+    .home-away.home { border-color: rgba(34,136,47,.4); color: var(--green-light); }
+
+    /* ── COACHING ── */
+    #coaches { background: var(--dark-2); }
+    .coaches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .coach-card {
+      background: var(--dark-3);
+      padding: 2rem;
+      border: 1px solid rgba(34,136,47,.15);
+      position: relative;
+    }
+    .coach-icon {
+      width: 56px; height: 56px;
+      background: rgba(34,136,47,.15);
+      border: 1px solid rgba(34,136,47,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .coach-role {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: .75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: .3rem;
+    }
+    .coach-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.3rem; }
+    .coach-desc { font-size: .9rem; color: var(--silver); margin-top: .6rem; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070c08;
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(34,136,47,.15);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: .5rem;
+    }
+    .footer-logo span { color: var(--green-light); }
+    .footer-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-bottom: 1.5rem;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .footer-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: .8rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--silver);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--green-light); }
+    .footer-copy { font-size: .78rem; color: rgba(255,255,255,.25); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-visual { display: none; }
+      .stat-item { min-width: 140px; }
+      .score-row { grid-template-columns: 1fr; gap: .4rem; }
+      .score-team.away { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span>⚡</span>
+    SKYLINE <span class="dot">&nbsp;SPARTANS</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#roster">Roster</a></li>
+    <li><a href="#scores">Scores</a></li>
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#coaches">Coaches</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="court-lines"></div>
+  <div class="hero-ball"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Sammamish, Washington · Issaquah School District</div>
+    <h1 class="hero-title">SKYLINE<br><span class="green">SPARTANS</span></h1>
+    <p class="hero-subtitle">Varsity Boys Basketball</p>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">Green &amp; Silver. Heart &amp; Hustle. The Skyline Spartans basketball program represents the finest tradition of competitive athletics on the Sammamish Plateau.</p>
+    <div class="hero-badges">
+      <div class="badge"><span class="icon">🏀</span> 4A KingCo Conference</div>
+      <div class="badge"><span class="icon">📍</span> 1122 228th Ave SE</div>
+      <div class="badge"><span class="icon">🎓</span> Est. 1997</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div id="stats-band">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Wins — 2025–26</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">11</div>
+      <div class="stat-label">Roster Players</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4A</div>
+      <div class="stat-label">Classification</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">'97</div>
+      <div class="stat-label">School Founded</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">95%</div>
+      <div class="stat-label">Graduation Rate</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="section-label">About the Program</div>
+        <h2 class="section-title">MORE THAN A GAME</h2>
+        <div class="section-line"></div>
+        <p>Skyline High School opened its doors in fall 1997 as the third and newest high school in the Issaquah School District. Perched atop the Sammamish Plateau at roughly 550 feet above sea level, the Spartans have built a proud athletic culture since day one.</p>
+        <p>The Skyline basketball program competes in the 4A KingCo Conference — one of the most competitive leagues in the state of Washington. Playing against regional rivals like Issaquah Eagles, Bellevue Wolverines, Mount Si Wildcats, and Newport Knights, the Spartans face top-tier competition every night.</p>
+        <p>Beyond the scoreboard, Skyline is known for academic excellence, boasting a 95.1% on-time graduation rate and offering the International Baccalaureate (IB) Diploma program. Spartan athletes are students first — competing at the highest level on and off the court.</p>
+        <div class="about-tags">
+          <span class="about-tag">Green &amp; Silver</span>
+          <span class="about-tag">KingCo 4A</span>
+          <span class="about-tag">Sammamish Plateau</span>
+          <span class="about-tag">IB School</span>
+          <span class="about-tag">Issaquah SD</span>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="court-art">
+          <!-- Basketball court SVG diagram -->
+          <svg viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="380" height="540" rx="2" stroke="#22882f" stroke-width="2"/>
+            <!-- Half court line -->
+            <line x1="10" y1="280" x2="390" y2="280" stroke="#22882f" stroke-width="1.5"/>
+            <!-- Center circle -->
+            <circle cx="200" cy="280" r="60" stroke="#22882f" stroke-width="1.5"/>
+            <circle cx="200" cy="280" r="6" fill="#22882f" opacity=".5"/>
+            <!-- Top key -->
+            <rect x="120" y="10" width="160" height="190" stroke="#22882f" stroke-width="1.5"/>
+            <rect x="140" y="10" width="120" height="120" stroke="#22882f" stroke-width="1.5"/>
+            <circle cx="200" cy="165" r="60" stroke="#22882f" stroke-width="1.5"/>
+            <!-- Top basket -->
+            <circle cx="200" cy="50" r="20" stroke="#22882f" stroke-width="2"/>
+            <line x1="200" y1="30" x2="200" y2="10" stroke="#22882f" stroke-width="1.5"/>
+            <!-- Bottom key -->
+            <rect x="120" y="360" width="160" height="190" stroke="#22882f" stroke-width="1.5"/>
+            <rect x="140" y="430" width="120" height="120" stroke="#22882f" stroke-width="1.5"/>
+            <circle cx="200" cy="395" r="60" stroke="#22882f" stroke-width="1.5"/>
+            <!-- Bottom basket -->
+            <circle cx="200" cy="510" r="20" stroke="#22882f" stroke-width="2"/>
+            <line x1="200" y1="530" x2="200" y2="550" stroke="#22882f" stroke-width="1.5"/>
+            <!-- 3pt arcs top -->
+            <path d="M 60 10 Q 60 240 200 240 Q 340 240 340 10" stroke="#22882f" stroke-width="1.5" fill="none"/>
+            <!-- 3pt arcs bottom -->
+            <path d="M 60 550 Q 60 320 200 320 Q 340 320 340 550" stroke="#22882f" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROSTER -->
+<section id="roster">
+  <div class="container">
+    <div class="section-label">2025–26 Season</div>
+    <h2 class="section-title">THE ROSTER</h2>
+    <div class="section-line"></div>
+    <div class="roster-grid">
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Guard</div>
+        <div class="player-name">Owen Alderman</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Forward</div>
+        <div class="player-name">Alay Shah</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Guard</div>
+        <div class="player-name">Jake Thompson</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Forward</div>
+        <div class="player-name">Harper McGillis</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Guard</div>
+        <div class="player-name">Jaiden Walcom</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Center</div>
+        <div class="player-name">Saif Desouky</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Guard / Forward</div>
+        <div class="player-name">Kamran Ghassemiah</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Forward</div>
+        <div class="player-name">David Ji</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Guard</div>
+        <div class="player-name">Cade Downing</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Center</div>
+        <div class="player-name">Ivan Skarin</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+      <div class="player-card">
+        <div class="player-num">—</div>
+        <div class="player-pos">Guard</div>
+        <div class="player-name">Spartan #11</div>
+        <div class="player-year">Varsity · 2025–26</div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;font-size:.82rem;color:var(--silver);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">Roster of 11 players as of Jan 14, 2026. Full jersey numbers available at MaxPreps.com.</p>
+  </div>
+</section>
+
+<!-- RECENT SCORES -->
+<section id="scores">
+  <div class="container">
+    <div class="section-label">Results</div>
+    <h2 class="section-title">RECENT SCORES</h2>
+    <div class="section-line"></div>
+    <div class="scores-list">
+
+      <div class="score-row win">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">60 – 50</div>
+          <div class="score-date"><span class="result-tag win">W</span> &nbsp; Dec 4, 2025 · Home</div>
+        </div>
+        <div class="score-team away">Sammamish RedHawks</div>
+      </div>
+
+      <div class="score-row loss">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">52 – 69</div>
+          <div class="score-date"><span class="result-tag loss">L</span> &nbsp; Dec 2, 2025 · Home</div>
+        </div>
+        <div class="score-team away">Renton Red Hawks</div>
+      </div>
+
+      <div class="score-row win">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">60 – 55</div>
+          <div class="score-date"><span class="result-tag win">W</span> &nbsp; Feb 11, 2025 · Home</div>
+        </div>
+        <div class="score-team away">Lincoln High School</div>
+      </div>
+
+      <div class="score-row loss">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">46 – 60</div>
+          <div class="score-date"><span class="result-tag loss">L</span> &nbsp; Feb 8, 2025 · Away</div>
+        </div>
+        <div class="score-team away">Woodinville Falcons</div>
+      </div>
+
+      <div class="score-row win">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">53 – 47</div>
+          <div class="score-date"><span class="result-tag win">W</span> &nbsp; Feb 6, 2025 · Home</div>
+        </div>
+        <div class="score-team away">Hazen Highlanders</div>
+      </div>
+
+      <div class="score-row loss">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">48 – 50</div>
+          <div class="score-date"><span class="result-tag loss">L</span> &nbsp; Jan 31, 2025 · Away</div>
+        </div>
+        <div class="score-team away">Renton Red Hawks</div>
+      </div>
+
+      <div class="score-row loss">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">38 – 66</div>
+          <div class="score-date"><span class="result-tag loss">L</span> &nbsp; Jan 27, 2025 · Away</div>
+        </div>
+        <div class="score-team away">Mount Si Wildcats</div>
+      </div>
+
+      <div class="score-row loss">
+        <div class="score-team">Skyline Spartans</div>
+        <div class="score-center">
+          <div class="score-nums">45 – 78</div>
+          <div class="score-date"><span class="result-tag loss">L</span> &nbsp; Jan 25, 2025 · Home</div>
+        </div>
+        <div class="score-team away">Bellevue Wolverines</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="container">
+    <div class="section-label">KingCo 4A Conference</div>
+    <h2 class="section-title">OPPONENTS</h2>
+    <div class="section-line"></div>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Opponent</th>
+          <th>Location</th>
+          <th>Conference</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="opp-name">Issaquah Eagles</div></td>
+          <td><span class="home-away home">Home</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Bellevue Wolverines</div></td>
+          <td><span class="home-away">Away</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Mount Si Wildcats</div></td>
+          <td><span class="home-away">Away</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Renton Red Hawks</div></td>
+          <td><span class="home-away home">Home</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Hazen Highlanders</div></td>
+          <td><span class="home-away home">Home</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Woodinville Falcons</div></td>
+          <td><span class="home-away">Away</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Newport Knights</div></td>
+          <td><span class="home-away">Away</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Sammamish RedHawks</div></td>
+          <td><span class="home-away home">Home</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Lincoln Abes</div></td>
+          <td><span class="home-away home">Home</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+        <tr>
+          <td><div class="opp-name">Liberty Patriots</div></td>
+          <td><span class="home-away">Away</span></td>
+          <td style="color:var(--silver);font-size:.9rem;">KingCo 4A</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- COACHES -->
+<section id="coaches">
+  <div class="container">
+    <div class="section-label">Coaching Staff</div>
+    <h2 class="section-title">THE BENCH</h2>
+    <div class="section-line"></div>
+    <div class="coaches-grid">
+      <div class="coach-card">
+        <div class="coach-icon">🏀</div>
+        <div class="coach-role">Head Coach</div>
+        <div class="coach-name">Michael Angelidis</div>
+        <div class="coach-desc">Leading the Spartans with a focus on team defense, fast-break offense, and developing student-athletes who excel in the classroom and on the court.</div>
+      </div>
+      <div class="coach-card">
+        <div class="coach-icon">📋</div>
+        <div class="coach-role">Assistant Coach</div>
+        <div class="coach-name">Varsity Assistant</div>
+        <div class="coach-desc">Supporting player development and game preparation across all offensive and defensive sets for the Spartan varsity squad.</div>
+      </div>
+      <div class="coach-card">
+        <div class="coach-icon">⚡</div>
+        <div class="coach-role">JV Head Coach</div>
+        <div class="coach-name">JV Head Coach</div>
+        <div class="coach-desc">Building the future of Spartan basketball through the JV program, developing fundamental skills and preparing players for varsity competition.</div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;font-size:.82rem;color:var(--silver);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">Coaching staff details available at skylinespartans.org</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SKYLINE <span>SPARTANS</span></div>
+  <div class="footer-sub">Varsity Boys Basketball · Sammamish, WA</div>
+  <div class="footer-links">
+    <a href="https://skylinespartans.org" target="_blank">Official Site</a>
+    <a href="https://www.maxpreps.com/wa/sammamish/skyline-spartans/basketball/" target="_blank">MaxPreps</a>
+    <a href="https://www.hudl.com/team/v2/38125/Boys-Varsity-Basketball" target="_blank">Hudl Highlights</a>
+    <a href="https://issaquah.wednet.edu/schools/skyline" target="_blank">School Website</a>
+  </div>
+  <div class="footer-copy">© 2026 Skyline High School Spartans Basketball · 1122 228th Ave SE, Sammamish, WA 98075 · Issaquah School District</div>
+</footer>
+
+</body>
+</html>
